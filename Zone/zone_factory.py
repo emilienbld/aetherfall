@@ -8,7 +8,7 @@ class ZoneFactory:
 
     @staticmethod
     def creer_foret():
-        return Zone("Foret")
+        return Zone("Foret",Enn)
 
     @staticmethod
     def creer_donjon():
