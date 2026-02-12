@@ -1,5 +1,8 @@
 from collections import deque
 
+from Personnage.Inventaire.arme import Arme
+from Personnage.Inventaire.armure import Armure
+
 
 class Inventaire():
     def __init__(self):
@@ -15,7 +18,7 @@ class Inventaire():
         return False
 
     def equiper_arme(self, item):
-        if item and item.type == "arme":
+        if isinstance(item, Arme):
             self.arme = item
             if item in self.items:
                 self.items.remove(item)
@@ -23,7 +26,7 @@ class Inventaire():
         return False
 
     def equiper_armure(self, item):
-        if item and item.type == "armure":
+        if isinstance(item, Armure):
             self.armure = item
             if item in self.items:
                 self.items.remove(item)

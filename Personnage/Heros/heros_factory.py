@@ -5,7 +5,7 @@ from Personnage.Heros.voleur import Voleur
 
 class HerosFactory:
     @staticmethod
-    def create_hero(hero):
+    def creer_hero(hero):
         if hero == 'guerrier':
             return Guerrier()
         if hero == 'mage':
