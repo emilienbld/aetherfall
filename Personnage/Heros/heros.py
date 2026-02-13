@@ -1,14 +1,33 @@
+from __future__ import annotations
+from typing import Optional
+
 from Personnage.personnage import Personnage
+from Personnage.Inventaire.inventaire import Inventaire
 
 class Heros(Personnage):
-    def __init__(self,nom):
-        super().__init__(nom=nom,pv=100,attaque=15,defense=20,vitesse=10,agilite=10,endurance=10)
-
-    def attaquer(self,cible):
-        pass
-
-    def esquive(self):
-        pass
-
-    def subir(self, degats):
-        pass
+    def __init__(
+        self,
+        nom: str,
+        pv: int,
+        attaque: int,
+        defense: int,
+        vitesse: int = 0,
+        agilite: int = 0,
+        endurance: int = 0,
+        intelligence: int = 0,
+        or_: int = 0,
+        inventaire: Optional[Inventaire] = None,
+    ):
+        super().__init__(
+            nom=nom,
+            pv=pv,
+            attaque=attaque,
+            defense=defense,
+            vitesse=vitesse,
+            agilite=agilite,
+            endurance=endurance,
+            intelligence=intelligence,
+            inventaire=inventaire or Inventaire(),
+        )
+        self.or_ = or_
+        self.classe = self.__class__.__name__

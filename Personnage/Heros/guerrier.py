@@ -1,11 +1,26 @@
 from Personnage.Heros.heros import Heros
 
 class Guerrier(Heros):
-    def __init__(self,nom):
-        super().__init__(nom=nom,pv=100,attaque=15,defense=20,vitesse=10,agilite=10,endurance=10)
+    def __init__(self, nom: str):
+        super().__init__(
+            nom=nom,
+            pv=150,
+            attaque=20,
+            defense=15,
+            vitesse=5,
+            agilite=5,
+            endurance=10,
+            intelligence=0,
+        )
 
-    def coupPuissant(self):
-        pass
+    def coup_puissant(self, cible):
+        degats = int(self.attaque * 1.5) - cible.defense
+        degats = max(1, degats)
+        cible.recevoir_degats(degats)
+        return degats
 
-    def chargeHeroique(self):
-        pass
+    def charge_heroique(self, cible):
+        degats = self.attaque * 2 - cible.defense
+        degats = max(1, degats)
+        cible.recevoir_degats(degats)
+        return degats
