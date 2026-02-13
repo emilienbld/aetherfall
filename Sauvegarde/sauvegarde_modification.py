@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, List
 from .sauvegarde_donnee import SauvegardeDonnee
 from Personnage.Heros.heros_factory import HerosFactory
 from Zone.zone_factory import ZoneFactory
@@ -16,7 +16,19 @@ class SauvegardeModification:
         self.heros_factory = HerosFactory()
         self.zone_factory = ZoneFactory()
 
-    def sauvegarder(self, jeu: Any, nom_fichier: str = "sauvegarde.json") -> None:
+    def _chemin_fichier(self, nom_sauvegarde: str) -> Path:
+        nom_sauvegarde = nom_sauvegarde.strip()
+        if not nom_sauvegarde:
+            nom_sauvegarde = "sauvegarde"
+        return self.dossier / f"{nom_sauvegarde}.json"
+
+    def lister_sauvegardes(self) -> List[str]:
+        noms: List[str] = []
+        for fichier in self.dossier.glob("*.json"):
+            noms.append(fichier.stem)
+        return noms
+
+    def sauvegarder(self, jeu: Any, nom_sauvegarde: str) -> None:
         hero = jeu.hero
         stats = hero.stats
 
@@ -36,21 +48,18 @@ class SauvegardeModification:
             endurance_hero=stats.endurance,
             intelligence_hero=getattr(stats, "intelligence", 0),
             or_hero=hero.or_,
-
             zone_actuelle=jeu.zone_actuelle.nom,
             etat_quete=jeu.quete_principale.etat.value,
-
             inventaire=inventaire_dict,
             arme_equipee=arme_dict,
             armure_equipee=armure_dict,
         )
 
-        chemin = self.dossier / nom_fichier
+        chemin = self._chemin_fichier(nom_sauvegarde)
         with chemin.open("w", encoding="utf-8") as f:
             json.dump(data.en_dict(), f, ensure_ascii=False, indent=2)
 
     def _serialiser_inventaire(self, inventaire: Inventaire):
-    # NE PAS OUBLIER DE COMPLETER DEMAIN
         result = []
         for obj in inventaire.objets:
             if isinstance(obj, Arme):
@@ -64,7 +73,7 @@ class SauvegardeModification:
                 result.append({
                     "type": "armure",
                     "nom": obj.name,
-                    "degats": obj.degats,
+                    "protection": obj.protection,
                     "element": obj.element,
                 })
             elif isinstance(obj, Consommable):
@@ -82,10 +91,17 @@ class SauvegardeModification:
     def _serialiser_armure(self, armure: Armure | None):
         if armure is None:
             return None
-        return {"nom": armure.name, "degats": armure.degats, "element": armure.element}
+        return {
+            "nom": armure.name,
+            "protection": armure.protection,
+            "element": armure.element,
+        }
+    
+    def charger(self, nom_sauvegarde: str) -> Any:
+        chemin = self._chemin_fichier(nom_sauvegarde)
+        if not chemin.exists():
+            raise FileNotFoundError(f"Sauvegarde introuvable : {chemin}")
 
-    def charger(self, nom_fichier: str = "sauvegarde.json") -> Any:
-        chemin = self.dossier / nom_fichier
         with chemin.open("r", encoding="utf-8") as f:
             raw = json.load(f)
 
@@ -94,21 +110,48 @@ class SauvegardeModification:
             nom=raw["nom_hero"]
         )
 
+        hero.stats.pv = raw["pv_hero"]
+        hero.stats.pv_max = raw["pv_max_hero"]
+        hero.stats.attaque = raw["attaque_hero"]
+        hero.stats.defense = raw["defense_hero"]
+        hero.stats.vitesse = raw["vitesse_hero"]
+        hero.stats.agilite = raw["agilite_hero"]
+        hero.stats.endurance = raw["endurance_hero"]
+        hero.stats.intelligence = raw["intelligence_hero"]
+        hero.or_ = raw["or_hero"]
+
         zone = self.zone_factory.creer_zone(raw["zone_actuelle"])
 
         inventaire = Inventaire()
         self._reconstituer_inventaire(inventaire, raw["inventaire"])
+
+        if raw.get("arme_equipee"):
+            arme_data = raw["arme_equipee"]
+            arme = Arme(arme_data["nom"], arme_data["degats"], arme_data["element"])
+            inventaire.equiper_arme(arme)
+
+        if raw.get("armure_equipee"):
+            armure_data = raw["armure_equipee"]
+            armure = Armure(
+                armure_data["nom"],
+                armure_data["protection"],
+                armure_data["element"],
+            )
+            inventaire.equiper_armure(armure)
+
         hero.inventaire = inventaire
 
-        return None
+        etat_quete = raw["etat_quete"]
+
+        return hero, zone, etat_quete
 
     def _reconstituer_inventaire(self, inventaire: Inventaire, data_liste):
         for data in data_liste:
             type_ = data["type"]
             if type_ == "arme":
-                obj = Arme(data["nom"], data["degats"], data["element"])
+                obj = Arme(data["nom"], data["degats"], data.get("element"))
             elif type_ == "armure":
-                obj = Armure(data["nom"], data["degats"], data["element"])
+                obj = Armure(data["nom"], data["protection"], data.get("element"))
             elif type_ == "consommable":
                 obj = Consommable(data["nom"])
             else:
