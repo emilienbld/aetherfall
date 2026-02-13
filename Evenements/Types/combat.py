@@ -17,18 +17,18 @@ class Combat(AbstractEvenement):
         print(f"Voulez vous l'affronter? ")
         choix = input("1. Oui 2. Non")
 
-        if(choix == 1):
-            while self.joueur.pv > 0 and self.ennemi.pv > 0:
-                self.tour += 1
-                print(f"\n{'=' * 50}")
-                print(f"TOUR {self.tour}")
-                print('=' * 50)
+        match choix:
+            case 1:
+                while self.joueur.alive and self.ennemi.alive:
+                    self.tour += 1
+                    print(f"\n{'=' * 50}")
+                    print(f"Tour {self.tour}")
 
-                # Tour du joueur
-                self.tour_joueur()
+                    self.tour_joueur()
 
-                # Tour ennemi (s'il est vivant)
-                if self.ennemi.pv > 0:
-                    self.tour_ennemi()
+                    if self.ennemi.alive:
+                        self.tour_ennemi()
 
-            return self.conclure_combat()
+                return self.conclure_combat()
+            case 2:
+                print(f"Vous avez fui le combat")

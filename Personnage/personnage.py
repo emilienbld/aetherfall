@@ -23,6 +23,10 @@ class Personnage(ABC):
         pass
 
     @abstractmethod
+    def defendre(self):
+        pass
+
+    @abstractmethod
     def subir(self):
         pass
 
