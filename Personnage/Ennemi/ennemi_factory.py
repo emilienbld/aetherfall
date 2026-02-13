@@ -19,3 +19,15 @@ class EnnemiFactory:
             LoupSauvage("Loup Sauvage 2"),
             LoupSauvage("Loup Sauvage 3"),
         ]
+
+    @staticmethod
+    def creer_ennemis_donjon():
+        return [
+            ChampionCorrompu("Champion Corrompu 1"),
+            ChampionCorrompu("Champion Corrompu 2"),
+            ChampionCorrompu("Champion Corrompu 3")
+        ]
+
+    @staticmethod
+    def creer_boss():
+        return Boss("Boss")

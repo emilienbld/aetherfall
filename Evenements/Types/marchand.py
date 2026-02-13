@@ -1,5 +1,5 @@
 from Evenements.abstractEvenement import AbstractEvenement
 
-class Dialogue(AbstractEvenement):
-    def excuter(self,personnage):
+class Marchand(AbstractEvenement):
+    def executer(self,personnage):
         pass

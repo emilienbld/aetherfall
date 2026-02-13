@@ -2,16 +2,7 @@ from Personnage.Heros.heros import Heros
 
 class Guerrier(Heros):
     def __init__(self, nom: str):
-        super().__init__(
-            nom=nom,
-            pv=150,
-            attaque=20,
-            defense=15,
-            vitesse=5,
-            agilite=5,
-            endurance=10,
-            intelligence=0,
-        )
+        super().__init__(nom,150,20,15,5,5,10)
 
     def coup_puissant(self, cible):
         degats = int(self.attaque * 1.5) - cible.defense

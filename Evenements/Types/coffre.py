@@ -6,6 +6,6 @@ class Coffre(AbstractEvenement):
         self.item = item
 
     def executer(self,personnage):
-        print(f" COFFRE trouvé ! Tu obtiens {self.item}")
+        print(f" Tu as trouvé un coffre. Tu obtiens {self.item}")
         personnage.inventaire.ajout_item(self.item)
         return "coffre"

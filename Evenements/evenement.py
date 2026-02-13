@@ -1,6 +1,9 @@
-class Evenement:
-    def __init__(self):
-        self.evenements = []
+from Evenements.abstractEvenement import AbstractEvenement
 
-    def evenementAletoire(self):
-        pass
+
+class Evenement:
+    def __init__(self, evenement: AbstractEvenement):
+        self.evenement = evenement
+
+    def executer(self,personnage):
+        return self.evenement.executer()

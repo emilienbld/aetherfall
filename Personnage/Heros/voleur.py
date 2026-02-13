@@ -2,18 +2,7 @@ from Personnage.Heros.heros import Heros
 
 class Voleur(Heros):
     def __init__(self, nom: str):
-        super().__init__(
-            nom=nom,
-            pv=110,
-            attaque=15,
-            defense=8,
-            vitesse=15,
-            agilite=20,
-            endurance=10,
-            intelligence=0,
-        )
-        self.endurance_max = 50
-        self.endurance_courante = 50
+        super().__init__(nom,110,15,8,15,20,10)
 
     def attaque_sournoise(self, cible):
         if self.endurance_courante < 10:
