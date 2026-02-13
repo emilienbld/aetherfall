@@ -8,7 +8,7 @@ class Combat(AbstractEvenement):
         self.tour = 0
         self.joueur = None
 
-    def executer(self,personnage : Heros):
+    def executer(self,personnage: Heros):
         self.joueur = personnage
         print(f"Vous avez été repéré par {self.ennemi.nom}")
         self.ennemi.afficher_stats()
@@ -24,7 +24,7 @@ class Combat(AbstractEvenement):
                     print(f"\n{'=' * 50}")
                     print(f"Tour {self.tour}")
 
-                    self.tour_joueur()
+                    self.tour_joueur(self.joueur)
 
                     if self.ennemi.alive:
                         self.tour_ennemi()
@@ -32,3 +32,18 @@ class Combat(AbstractEvenement):
                 return self.conclure_combat()
             case 2:
                 print(f"Vous avez fui le combat")
+
+    def tour_joueur(self,joueur):
+        print(f"\n Que voulez vous faire?"
+              f"1. Prendre une consommable"
+              f"2. Attaquer")
+
+        choix = input()
+        match choix:
+            case 1:
+                pass
+            case 2:
+                joueur.choisir_action(self.ennemi)
+
+    def tour_ennemi(self,joueur):
+        self.ennemi.attaquer()
